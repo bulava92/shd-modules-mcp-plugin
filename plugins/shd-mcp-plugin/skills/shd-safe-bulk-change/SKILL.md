@@ -4,7 +4,7 @@ description: Use before any SHD bulk create, update, import, archive, delete, or
 metadata: modules=*
 ---
 
-# Safe SHD bulk changes
+# SHD safe bulk changes
 
 ## Plan first
 

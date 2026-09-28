@@ -4,7 +4,7 @@ description: Use when the user asks for all active SHD projects, project deadlin
 metadata: modules=projects-core
 ---
 
-# Active SHD projects
+# SHD active projects
 
 ## Workflow
 

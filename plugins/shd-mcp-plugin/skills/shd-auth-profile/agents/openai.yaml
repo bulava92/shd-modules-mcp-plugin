@@ -1,0 +1,3 @@
+interface:
+  display_name: SHD authenticated profile
+  short_description: Inspect and update the authenticated profile

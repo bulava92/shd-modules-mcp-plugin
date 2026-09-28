@@ -4,7 +4,7 @@ description: Use when the user asks to inspect AirBase tables, validate project 
 metadata: modules=airbase
 ---
 
-# AirBase audit
+# SHD AirBase audit
 
 See `references/audit-contract.md` for the bounded read and evidence format.
 

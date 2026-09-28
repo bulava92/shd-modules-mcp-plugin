@@ -4,7 +4,7 @@ description: Use for read-only natural-language questions about project AirBase 
 metadata: modules=airbase
 ---
 
-# Answer questions from AirBase
+# SHD AirBase queries
 
 Use the authenticated AirBase MCP tools as the source of truth. For a natural-language question, start with the read-only `shd_airbase_query` tool. It searches across the selected Base's tables and follows populated record links in both directions, up to four relationship hops. Do not infer wiring or equipment relationships from names, group numbers or expected conventions.
 

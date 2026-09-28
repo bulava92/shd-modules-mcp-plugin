@@ -1,5 +1,5 @@
 interface:
-  display_name: Active SHD projects
+  display_name: SHD active projects
   short_description: Project deadlines and statuses
 policy:
   allow_implicit_invocation: false

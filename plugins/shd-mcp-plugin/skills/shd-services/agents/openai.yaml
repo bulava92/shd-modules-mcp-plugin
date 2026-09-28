@@ -1,0 +1,3 @@
+interface:
+  display_name: SHD services catalog
+  short_description: Inspect and manage the SHD service catalog

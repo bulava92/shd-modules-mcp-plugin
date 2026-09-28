@@ -1,5 +1,5 @@
 interface:
-  display_name: AirBase audit
+  display_name: SHD AirBase audit
   short_description: Read-only schema and data audit
 policy:
   allow_implicit_invocation: false

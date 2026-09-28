@@ -1,0 +1,3 @@
+interface:
+  display_name: SHD System Base
+  short_description: Inspect allowlisted global SHD tables
