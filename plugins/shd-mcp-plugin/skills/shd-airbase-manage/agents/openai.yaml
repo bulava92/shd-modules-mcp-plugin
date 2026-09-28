@@ -1,0 +1,5 @@
+interface:
+  display_name: "Управление AirBase"
+  short_description: "Изменение схемы, записей и доступа AirBase"
+policy:
+  allow_implicit_invocation: true

@@ -498,6 +498,22 @@
         "Fields"
       ]
     },
+    "airbase-grid": {
+      "ru": [
+        "Таблица AirBase",
+        "Записи AirBase с фильтрами, сортировкой, изменением ячеек и массовыми действиями.",
+        "Запись",
+        "Обновлено",
+        "Поля таблицы"
+      ],
+      "en": [
+        "AirBase grid",
+        "AirBase records with field filters, sorting, cell edits and bulk actions.",
+        "Record",
+        "Updated",
+        "Table fields"
+      ]
+    },
     "documents": {
       "ru": [
         "Документы",
@@ -1016,6 +1032,30 @@
         "data"
       ],
       "view": "preview",
+      "contextRequired": true,
+      "contextSets": [
+        [
+          "base",
+          "project_code"
+        ],
+        [
+          "table"
+        ]
+      ],
+      "sort": "asc"
+    },
+    "airbase-grid": {
+      "listTool": "shd_airbase_records",
+      "listArgs": {
+        "limit": 100,
+        "include_fields": true,
+        "include_view_meta": true
+      },
+      "paths": [
+        "data.records",
+        "data"
+      ],
+      "view": "table",
       "contextRequired": true,
       "contextSets": [
         [
