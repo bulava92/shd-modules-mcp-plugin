@@ -1,3 +1,5 @@
 interface:
   display_name: SHD short links
   short_description: Manage SHD short links and aliases
+policy:
+  allow_implicit_invocation: false

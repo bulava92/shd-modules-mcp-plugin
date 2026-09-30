@@ -2,4 +2,4 @@ interface:
   display_name: SHD AirBase queries
   short_description: Чтение записей и связей проекта
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

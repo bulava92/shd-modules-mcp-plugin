@@ -17,6 +17,8 @@ readback. Do not invent fields, statuses, identifiers, routes or capabilities.
 - AirBase project-data questions and relationship lookups: use AirBase tools
   and `shd-airbase-query`. For duplicates, broken links or a broader
   data-quality audit, use `shd-airbase-audit`.
+- AirBase schema, record, cell, field access, external table, public table
+  access or import changes: use `shd-airbase-manage`.
 - Tasks, task projects, task status or task dates: use Tasks tools and the
   `shd-task-workflow` workflow.
 - Project files and paths: use Files tools and the `shd-project-files` workflow.
