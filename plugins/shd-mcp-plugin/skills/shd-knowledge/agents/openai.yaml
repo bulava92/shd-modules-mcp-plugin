@@ -1,0 +1,5 @@
+interface:
+  display_name: SHD Knowledge
+  short_description: Read and manage scoped Knowledge drafts
+policy:
+  allow_implicit_invocation: false

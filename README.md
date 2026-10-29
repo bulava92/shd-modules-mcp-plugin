@@ -10,8 +10,10 @@ The package contains:
 
 - `.codex-plugin/plugin.json` — plugin metadata;
 - `.mcp.json` — the official SHD Streamable HTTP MCP endpoint;
-- `skills/` — routing, project, ProjectBase, AirBase data queries, task,
-  file, finance, CRM, analytics, estimates, scheduling, entity resolution, Wiki, discussions,
+- skills/ — routing, projects, ProjectBase, AirBase records, dashboards and
+  Omni actions, tasks, files, Knowledge,
+  project editing, repository inspection, Zulip, Grafana, admin, finance, CRM,
+  analytics, estimates, scheduling, entity resolution, Wiki, discussions,
   documents, organizations/ACL, notifications, inventory, agents, status-page,
   realtime/activity, Terms/contracts and Gitea workflows;
 - `assets/` — plugin branding;

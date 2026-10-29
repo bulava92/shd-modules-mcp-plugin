@@ -1,0 +1,5 @@
+interface:
+  display_name: "AirBase Omni actions"
+  short_description: "Registered Omni actions on a connected Mac"
+policy:
+  allow_implicit_invocation: false

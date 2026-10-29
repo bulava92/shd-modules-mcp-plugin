@@ -131,9 +131,15 @@
     return Boolean(action && ((Array.isArray(action.targets) && action.targets.length) || action.target));
   }
 
+  function matchesCondition(action) {
+    if (!object(action && action.when)) return true;
+    if (!state.selected || typeof action.when.path !== 'string') return false;
+    return readPath(state.selected, action.when.path) === action.when.equals;
+  }
+
   function actionList() {
     return Array.isArray(state.widget.actions) ? state.widget.actions.filter(function (action) {
-      return action && action.tool;
+      return action && action.tool && matchesCondition(action);
     }) : [];
   }
 
@@ -245,20 +251,22 @@
 
   function renderForm() {
     ensurePanel();
+    var actions = actionList();
+    if (state.action && !actions.some(function (action) { return action.id === state.action.id; })) state.action = null;
     var selectedActionId = state.action ? state.action.id : '';
     elements.select.replaceChildren();
     var placeholder = document.createElement('option');
     placeholder.value = '';
     placeholder.textContent = t('chooseAction');
     elements.select.append(placeholder);
-    actionList().forEach(function (action) {
+    actions.forEach(function (action) {
       var option = document.createElement('option');
       option.value = action.id;
       option.textContent = actionLabel(action);
       elements.select.append(option);
     });
     elements.select.value = selectedActionId;
-    elements.select.hidden = actionList().length === 0;
+    elements.select.hidden = actions.length === 0;
     elements.form.replaceChildren();
     elements.status.textContent = '';
     elements.submit.disabled = state.busy;
@@ -267,7 +275,7 @@
       elements.selection.textContent = state.selected ? text(state.selected.title || state.selected.name || state.selected.id || '') : '';
       elements.submit.hidden = true;
       elements.cancel.hidden = true;
-      if (actionList().length && !state.selected && actionList().every(hasTargets)) {
+      if (actions.length && !state.selected && actions.every(hasTargets)) {
         elements.form.append(make('div', t('selectRecord'), 'shd-widget-actions-hint'));
       }
       return;
@@ -402,13 +410,17 @@
     var records = recordsFrom(payload);
     if (records.length || Array.isArray(payload.data) || Array.isArray(payload.items) || Array.isArray(payload.projects)) {
       state.records = records;
-      if (state.selected && !state.records.some(function (item) {
+      if (state.selected) {
         var selectedId = text(state.selected.id || state.selected.code || state.selected.key || state.selected.number).toLowerCase();
-        var itemId = text(item.id || item.code || item.key || item.number).toLowerCase();
-        return selectedId && itemId && selectedId === itemId;
-      })) {
-        state.selected = null;
-        state.action = null;
+        var selectedRecord = selectedId ? state.records.find(function (item) {
+          var itemId = text(item.id || item.code || item.key || item.number).toLowerCase();
+          return itemId && selectedId === itemId;
+        }) : null;
+        if (selectedRecord) state.selected = selectedRecord;
+        else {
+          state.selected = null;
+          state.action = null;
+        }
       }
     }
     ensurePanel();

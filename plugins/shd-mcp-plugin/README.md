@@ -10,13 +10,29 @@ Each Skill declares its module scope; the MCP server filters Skill discovery
 and Skill resources by the authenticated module access in the same way as
 prompts and data resources.
 
+Use shd_prompt_search and shd_prompt_get for reusable workflow instructions,
+and shd_resources_search and shd_resources_get for current read-only context
+when the connected server exposes those helper tools. If a helper is missing,
+use the host's native MCP prompt or resource catalog and read methods when
+available. Tools perform operations; prompts guide multi-step work; resources
+return addressable context. All three remain subject to the authenticated
+SHD scope.
+
 ## Included workflows
 
 - active projects with completion dates and statuses;
 - project status and risk summaries;
 - ProjectBase schema and data-quality audits;
+- AirBase record workflows, saved dashboards, AI-field preview/runs and
+  registered Omni actions;
 - guarded task workflows;
 - project file inspection and actions;
+- scoped Knowledge entries, context, drafts and review;
+- allowlisted source, database and service editing with guarded writes;
+- read-only inspection of allowlisted source repositories;
+- Zulip streams, topics, messages, search and explicit message actions;
+- Grafana dashboards, data sources, metrics, logs, alerts and incidents;
+- SHD administration settings, users, organizations and access audits;
 - finance and CRM read/audit workflows;
 - finance account, balance, payment and settlement audits;
 - analytics, comparisons, reports and task/proposal metrics;
@@ -31,13 +47,17 @@ prompts and data resources.
 - inventory, assets, stock, procurement and stocktake workflows;
 - service catalog, version, approval and site-publication workflows;
 - short-link, public-alias, rotation and revocation workflows;
-- global System Base and authenticated profile workflows;
+- authenticated profile workflows;
 - agent/controller diagnostics, tunnels, endpoints and runtime actions;
+- PDF Scheme Editor plan geometry, rooms, walls, openings, annotations, calibration and lighting-layer workflows;
 - status-page monitors, groups, history and incidents;
 - realtime sessions, event cursors and operational activity;
 - Terms documents, revisions, completeness and contract discussions;
 - linked Gitea issues, labels, comments and attachments;
 - safe bulk-change planning and validation rules.
+
+The legacy System Base workflow is not included: the current MCP registration
+does not publish a System Base module or its tools.
 
 When the connected MCP host supports MCP Apps UI, the 44 SHD render tools have
 inline interactive widgets: active projects, module registers and specialized

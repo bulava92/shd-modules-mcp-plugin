@@ -20,11 +20,20 @@
     "inventory",
     "services",
     "short-links",
-    "system-base",
     "profile",
     "organizations",
     "notifications",
     "realtime",
+    "Knowledge",
+    "project-edit",
+    "repository-code",
+    "Zulip",
+    "Grafana",
+    "AirBase dashboards",
+    "AI fields",
+    "Omni",
+    "admin",
+    "PDF Scheme Editor",
     "Gitea",
     "MCP"
   ],
@@ -32,7 +41,7 @@
   "interface": {
     "displayName": "SHD MCP",
     "shortDescription": "SHD projects and operations",
-  "longDescription": "Installable SHD MCP workflows for projects, ProjectBase, tasks, files, finance, CRM, documents, service catalog, short links, profile, global System Base, access control, inventory, notifications, realtime, status monitoring and linked Gitea operations.",
+    "longDescription": "Installable SHD MCP workflows for projects, ProjectBase, AirBase records and dashboards, AI-computed fields, registered Omni actions, Knowledge, guarded project editing, read-only repository inspection, tasks, files, finance, CRM, documents, service catalog, short links, profile, access control, Grafana, Zulip, inventory, notifications, realtime, status monitoring and linked Gitea operations and PDF Scheme Editor plan geometry.",
     "developerName": "SHD",
     "category": "Productivity",
     "capabilities": [
@@ -46,7 +55,8 @@
     "defaultPrompt": [
       "Покажи активные проекты с датой завершения и статусом.",
       "Сделай сводку по проекту и его рискам.",
-      "Проверь ProjectBase без изменения данных."
+      "Проверь ProjectBase без изменения данных.",
+      "Найди подходящую инструкцию и актуальный контекст по проекту."
     ]
   },
   "mcpServers": "./.mcp.json"

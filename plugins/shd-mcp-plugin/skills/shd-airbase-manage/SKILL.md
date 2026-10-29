@@ -1,12 +1,12 @@
 ---
 name: shd-airbase-manage
-description: Use when the user explicitly asks to create or change AirBase schema, records, cells, field access, external table links, public table access or imports. Do not use for read-only queries, data audits, Omni, or global System Base operations.
+description: Use when the user asks to inspect, query, create or change saved AirBase dashboards, or explicitly asks to create or change schema, records, cells, AI-computed field runs, field access, external table links, public table access or imports. Do not use for ordinary record queries, data audits, Omni device actions, or global System Base operations.
 metadata: modules=airbase
 ---
 
 # Управление AirBase
 
-Используй инструменты AirBase MCP и выбранную пользователем проектную базу. Перед изменением прочитай схему нужной таблицы и точные записи. Не угадывай ID, коды полей, ссылки между записями и допустимые значения.
+Используй инструменты AirBase MCP и выбранную пользователем проектную базу. Перед изменением прочитай схему нужной таблицы и точные записи. Не угадывай ID, коды полей, ссылки между записями и допустимые значения. Для дашбордов и AI-полей найди подходящий сценарий через shd_prompt_search и отрендери его через shd_prompt_get.
 
 ## Записи и ячейки
 
@@ -21,6 +21,20 @@ metadata: modules=airbase
 - Для правил доступа к полю сначала прочитай `get-field-access-policy`; сохраняй только явно запрошенные `default_level` и правила.
 - Подключай внешнюю таблицу только по предоставленному пользователем `source_url`. Перед отключением уточни конкретную таблицу и используй подтверждение.
 - Для доступа клиентов по публичной ссылке сначала прочитай текущие настройки; режим `selected` должен содержать только перечисленные пользователем таблицы.
+
+## Сохранённые дашборды
+
+- Для текущего контекста используй shd_resources_search и shd_resources_get или прочитай shd://airbases/{base_public_id}/dashboards; затем открой точную конфигурацию через shd_airbase_dashboard_get.
+- Перед сборкой дашборда прочитай shd_airbase_dashboard_widget_catalog. Для данных используй shd_airbase_dashboard_query и учитывай ограниченную выдачу и пагинацию.
+- Создавай и изменяй дашборды только по явному запросу. Сохраняй не затронутые виджеты и фильтры. Удаляй только точно названный дашборд и передавай confirm=true.
+- PDF возвращается в base64. Передавай реальные значения из shd_airbase_dashboard_query и тип/размеры из конфигурации точного дашборда; каждому виджету нужны type, width_units и height_units. Не выдумывай результаты.
+
+## AI-поля
+
+- Перед preview или запуском прочитай конфигурацию точного поля и доступные поля-источники.
+- shd_airbase_ai_field_preview вызывает AI-провайдера и может расходовать лимит организации, но не записывает значения в AirBase.
+- shd_airbase_ai_field_start ставит в очередь запись вычисленных значений. Запускай только по явному запросу пользователя и только с одним точным scope: view_id либо record_ids, не обоими. Проверяй результат через shd_airbase_ai_field_status; отменяй только этот run и только по просьбе.
+- Сообщай о завершении только по конечному статусу сервера.
 
 ## Импорт и вложения
 

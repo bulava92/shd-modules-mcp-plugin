@@ -1390,12 +1390,16 @@ progress::-moz-progress-bar {
   <main class="app" aria-live="polite" data-shd-widget-engine="shd-universal-v1" data-widget-module="active-projects">
     <header class="header">
       <div>
-        <h1 data-i18n="title">Активные проекты</h1>
+        <h1 id="title" data-i18n="title">Активные проекты</h1>
         <p class="subtitle" data-i18n="subtitle">Сроки завершения и текущие статусы</p>
       </div>
       <button class="button" id="refresh" type="button" data-i18n="refresh">Обновить</button>
     </header>
     <div class="toolbar">
+      <select id="project-filter" aria-label="Список проектов">
+        <option value="active" data-i18n="activeFilter">Активные</option>
+        <option value="archived" data-i18n="archivedFilter">Архивные</option>
+      </select>
       <input class="search" id="search" type="search" autocomplete="off" data-i18n-placeholder="search" placeholder="Поиск по проекту или коду">
     </div>
     <div class="summary" id="summary"></div>
@@ -1428,8 +1432,12 @@ progress::-moz-progress-bar {
       var messages = {
         ru: {
           title: 'Активные проекты',
+          archivedTitle: 'Архивные проекты',
           subtitle: 'Сроки завершения и текущие статусы',
           refresh: 'Обновить',
+          activeFilter: 'Активные',
+          archivedFilter: 'Архивные',
+          projectFilter: 'Список проектов',
           search: 'Поиск по проекту или коду',
           project: 'Проект',
           deadline: 'Дата завершения',
@@ -1452,8 +1460,12 @@ progress::-moz-progress-bar {
         },
         en: {
           title: 'Active projects',
+          archivedTitle: 'Archived projects',
           subtitle: 'Completion dates and current statuses',
           refresh: 'Refresh',
+          activeFilter: 'Active',
+          archivedFilter: 'Archived',
+          projectFilter: 'Project list',
           search: 'Search by project or code',
           project: 'Project',
           deadline: 'Completion date',
@@ -1490,9 +1502,12 @@ progress::-moz-progress-bar {
       var nextRequestId = 1;
       var mcpAppsProtocolVersion = '2026-01-26';
       var busy = false;
+      var archivedFilter = false;
 
       var elements = {
+        title: document.getElementById('title'),
         refresh: document.getElementById('refresh'),
+        projectFilter: document.getElementById('project-filter'),
         search: document.getElementById('search'),
         summary: document.getElementById('summary'),
         rows: document.getElementById('rows'),
@@ -1516,6 +1531,7 @@ progress::-moz-progress-bar {
           if (t[key]) node.setAttribute('placeholder', t[key]);
         });
         document.querySelector('.table').setAttribute('aria-label', t.project);
+        elements.projectFilter.setAttribute('aria-label', t.projectFilter);
       }
 
       function request(method, params) {
@@ -1669,7 +1685,7 @@ progress::-moz-progress-bar {
         projects.forEach(function (project) {
           var row = makeElement('button', '', 'project-row');
           row.type = 'button';
-          row.dataset.shdRecordId = getProjectCode(project);
+          row.dataset.shdRecordId = String(project.id || project.code || project.key || project.number || getProjectCode(project));
           row.dataset.shdRecordTitle = getProjectName(project);
           row.setAttribute('aria-label', getProjectName(project));
 
@@ -1701,6 +1717,7 @@ progress::-moz-progress-bar {
       function setBusy(nextBusy, label) {
         busy = nextBusy;
         elements.refresh.disabled = nextBusy;
+        elements.projectFilter.disabled = nextBusy;
         if (nextBusy) elements.refresh.textContent = label || t.loading;
         else elements.refresh.textContent = t.refresh;
       }
@@ -1722,7 +1739,7 @@ progress::-moz-progress-bar {
         setBusy(true);
         elements.error.hidden = true;
         try {
-          var result = await request('tools/call', { name: 'shd_list_projects', arguments: { archived: false, limit: 100 } });
+          var result = await request('tools/call', { name: 'shd_list_projects', arguments: { archived: archivedFilter, limit: 100 } });
           render(unwrapResult(result));
         } catch (error) {
           setError(error && error.message ? error.message : t.refreshError);
@@ -1789,6 +1806,13 @@ progress::-moz-progress-bar {
 
       elements.search.addEventListener('input', renderRows);
       elements.refresh.addEventListener('click', refresh);
+      elements.projectFilter.addEventListener('change', function () {
+        archivedFilter = elements.projectFilter.value === 'archived';
+        elements.title.textContent = archivedFilter ? t.archivedTitle : t.title;
+        elements.search.value = '';
+        elements.details.hidden = true;
+        void refresh();
+      });
       elements.closeDetails.addEventListener('click', function () { elements.details.hidden = true; });
       applyTranslations();
       void initializeHost();

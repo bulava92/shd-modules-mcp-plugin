@@ -1,0 +1,5 @@
+interface:
+  display_name: SHD repository code
+  short_description: Read-only source search and inspection
+policy:
+  allow_implicit_invocation: false

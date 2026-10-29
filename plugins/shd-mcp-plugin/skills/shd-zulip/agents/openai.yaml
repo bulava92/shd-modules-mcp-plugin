@@ -1,0 +1,5 @@
+interface:
+  display_name: SHD Zulip
+  short_description: Search and manage linked Zulip messages
+policy:
+  allow_implicit_invocation: false

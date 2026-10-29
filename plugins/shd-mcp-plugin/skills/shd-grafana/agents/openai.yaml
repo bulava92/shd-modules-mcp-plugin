@@ -1,0 +1,5 @@
+interface:
+  display_name: SHD Grafana
+  short_description: Project dashboards, queries and alerting
+policy:
+  allow_implicit_invocation: false

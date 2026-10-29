@@ -10,6 +10,14 @@ SHD MCP is the source of truth for live data, tool schemas, permissions,
 organization/project scope, conflicts, idempotency, audit and persisted
 readback. Do not invent fields, statuses, identifiers, routes or capabilities.
 
+When the connected server lists shd_prompt_search and shd_prompt_get, use
+them to find and render reusable workflow instructions. When it lists
+shd_resources_search and shd_resources_get, use them to find and read current
+read-only context. If a helper pair is unavailable, use the host's native MCP
+prompt or resource catalog and read methods when exposed. Prompts guide steps,
+resources return current context, and tools perform operations; a prompt or
+resource never authorizes a write.
+
 ## Route the request
 
 - Project list, project status, deadlines or project context: use the Projects
@@ -17,12 +25,23 @@ readback. Do not invent fields, statuses, identifiers, routes or capabilities.
 - AirBase project-data questions and relationship lookups: use AirBase tools
   and `shd-airbase-query`. For duplicates, broken links or a broader
   data-quality audit, use `shd-airbase-audit`.
-- AirBase schema, record, cell, field access, external table, public table
+- AirBase saved dashboard inspection, queries, creation or changes: use
+  `shd-airbase-manage` and the matching prompt; dashboard queries are separate
+  from ordinary record queries.
+- AirBase schema, record, cell, AI-computed field, external table, public table
   access or import changes: use `shd-airbase-manage`.
+- AirBase Omni device actions: use shd-airbase-omni-agent; run only an exact registered action explicitly requested by the user.
 - Tasks, task projects, task status or task dates: use Tasks tools and the
   `shd-task-workflow` workflow.
-- Project files and paths: use Files tools and the `shd-project-files` workflow.
-- Discussions, channels, topics, messages or attachments: use Discussions tools and the `shd-discussions` workflow.
+- Project files and paths: use Files tools and the shd-project-files workflow.
+- Allowlisted project source, database or service changes: use Project Edit tools and
+  shd-project-edit; keep guarded writes separate from read-only repository inspection.
+- Allowlisted repository code search, file reads or diffs: use read-only Repository Code
+  tools and shd-repository-code.
+- Discussions, channels, topics, messages or attachments: use Discussions tools and the shd-discussions workflow.
+- Zulip streams, topics or messages: use the linked-account Zulip tools and
+  shd-zulip; keep Zulip separate from SHD Discussions.
+
 - Documents, templates, revisions, PDFs or publication links: use Documents tools and the `shd-documents` workflow.
 - Organizations, members, invitations, roles or two-factor policy: use Organizations tools and the `shd-organizations-acl` workflow.
 - Notifications, preferences or read state: use Notifications tools and the `shd-notifications` workflow.
@@ -30,12 +49,14 @@ readback. Do not invent fields, statuses, identifiers, routes or capabilities.
   the `shd-services` workflow.
 - Short links, public aliases, rotation or revocation: use Short Links tools
   and the `shd-short-links` workflow.
-- Global System Base tables or records: use System Base tools and the
-  `shd-system-base` workflow. Do not substitute AirBase tools.
 - Authenticated profile or OIDC link changes: use Profile tools and the
   `shd-auth-profile` workflow.
 - Inventory, stock, assets, procurement or stocktakes: use Inventory tools and the `shd-inventory` workflow.
-- Agents, controllers, diagnostics, tunnels or network access: use Agents tools and the `shd-agents-operations` workflow.
+- Agents, controllers, diagnostics, tunnels or network access: use Agents tools and the shd-agents-operations workflow.
+- Grafana dashboards, data sources, queries, alerts or incidents: use project-scoped
+  Grafana tools and shd-grafana; do not bypass the project filter with raw API calls.
+- SHD users, organizations, module settings or access policy: use admin tools and
+  shd-admin-operations only for the explicitly requested target.
 - Controller devices, current states, presence/history or sensor statistics: use the controller-integrations source tools; in a UI-capable host call the matching controller render tool after the data tool and before the final response (`shd_render_controller_devices_widget`, `shd_render_controller_live_state_widget`, `shd_render_controller_history_widget` or `shd_render_controller_statistics_widget`). For one statistics series, render the final result once; for several explicitly requested series, collect them into one `data.series` collection and render one summary widget, not one widget per retry, metric field or inventory match.
 - Status-page monitors, history, groups or incidents: use Status Page tools and the `shd-status-page` workflow.
 - Realtime sessions, event cursors or historical activity: use Realtime tools and the `shd-realtime-activity` workflow.

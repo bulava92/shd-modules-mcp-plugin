@@ -1,0 +1,5 @@
+interface:
+  display_name: SHD admin operations
+  short_description: Review users, organizations and access settings
+policy:
+  allow_implicit_invocation: false

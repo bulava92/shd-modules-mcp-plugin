@@ -1,0 +1,5 @@
+interface:
+  display_name: SHD project editing
+  short_description: Guarded source, database and service changes
+policy:
+  allow_implicit_invocation: false
