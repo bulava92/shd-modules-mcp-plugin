@@ -1,6 +1,6 @@
 ---
 name: shd-pdf-scheme-editor
-description: Use when reading or editing PDF plans, room boundaries, walls, windows, doors, points, cleanup masks, drawings, comments, legends, layers, calibration or lighting links in SHD PDF Scheme Editor.
+description: Use for general SHD PDF Scheme Editor document operations, annotations, calibration, lighting layers and plan review. For room tracing use shd-pdf-room-tracing; for wall, window and door recognition or tracing use shd-pdf-wall-openings.
 metadata: modules=pdf-scheme-editor
 ---
 
@@ -16,14 +16,18 @@ metadata: modules=pdf-scheme-editor
 
 ## Trace room boundaries from the drawing
 
+For detailed room tracing and geometry review, use the focused shd-pdf-room-tracing skill; this section provides the editor-specific tools and data contract.
+
 - Before tracing, call `shd_preview_pdf_scheme_editor_room_boundary` for the full page at `level=z100`. Use the returned page width and height as the coordinate limits; coordinates have a top-left origin and use PDF Scheme Editor page-local units.
 - Zoom in on difficult corners, wall thicknesses, offsets, and built-ins by requesting a smaller crop with `level=z475` or `level=z650`. The crop coordinates use the same page space as room `points`.
-- Send a proposed polygon as `preview_points` to see its blue outline over the source image. Revise the polygon until every segment follows the room boundary and excludes wall thickness. When the user says a convector recess belongs to the room, include the complete recess and convector inside the outline; for this Prime Park plan, apply that rule to every room.
+- Send a proposed polygon as `preview_points` to see its blue outline over the source image. Revise the polygon until every segment follows the room boundary and excludes wall thickness. Include a convector and its surrounding floor recess in the room only when the source drawing shows that the recess is part of the room; check each convector independently and do not assume that every heater creates a niche.
 - Compare the preview tool's calibrated `polygon_area_m2` with the room area printed on the plan. If it differs materially, recheck missed recesses, wall thickness, and the calibration endpoints before saving.
 - Preview is read-only. Do not save a proposed room until its whole boundary has been checked against the source image; use the typed room tool for the actual write, then read back and preview the saved points.
 - For complex or stepped rooms, follow each turn of the boundary with separate vertices. Do not replace a concave room with a rectangle or split one room into separate records unless the user asks for that split.
 
 ## Recognize wall regions and openings
+
+For focused wall, window, and door recognition and tracing, use `shd-pdf-wall-openings`; this section retains the editor-specific tools and data contract.
 
 - A `wall` annotation is a filled wall-area polygon, not a centerline. Read the plan itself and follow the wall faces, including the exterior perimeter, rather than inferring every wall from room outlines alone.
 - For vector PDFs, call `shd_analyze_pdf_scheme_editor_vectors` and inspect both fill and stroke style groups. Preview candidate groups with `shd_preview_pdf_scheme_editor_vector_style`; styles are visual evidence, not semantic labels. Confirm hatch, paired faces, junctions and openings against high-resolution page crops before tracing.

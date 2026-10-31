@@ -49,7 +49,9 @@ SHD scope.
 - short-link, public-alias, rotation and revocation workflows;
 - authenticated profile workflows;
 - agent/controller diagnostics, tunnels, endpoints and runtime actions;
-- PDF Scheme Editor plan geometry, rooms, walls, openings, annotations, calibration and lighting-layer workflows;
+- PDF Scheme Editor plan geometry, including focused room tracing and wall, window
+  and door tracing around wall faces, thresholds, columns, boxes, niches and openings,
+  plus annotations, calibration and lighting-layer workflows;
 - status-page monitors, groups, history and incidents;
 - realtime sessions, event cursors and operational activity;
 - Terms documents, revisions, completeness and contract discussions;

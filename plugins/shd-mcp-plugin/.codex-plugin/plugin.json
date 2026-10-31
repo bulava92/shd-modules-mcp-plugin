@@ -1,6 +1,6 @@
 {
   "name": "shd-mcp-plugin",
-  "version": "0.5.2",
+  "version": "0.5.4",
   "description": "Ready-to-install SHD workflows backed by the authenticated SHD MCP server.",
   "author": {
     "name": "SHD",
@@ -34,14 +34,17 @@
     "Omni",
     "admin",
     "PDF Scheme Editor",
+    "PDF room tracing",
     "Gitea",
-    "MCP"
+    "MCP",
+    "PDF wall tracing",
+    "PDF openings"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "SHD MCP",
     "shortDescription": "SHD projects and operations",
-    "longDescription": "Installable SHD MCP workflows for projects, ProjectBase, AirBase records and dashboards, AI-computed fields, registered Omni actions, Knowledge, guarded project editing, read-only repository inspection, tasks, files, finance, CRM, documents, service catalog, short links, profile, access control, Grafana, Zulip, inventory, notifications, realtime, status monitoring and linked Gitea operations and PDF Scheme Editor plan geometry.",
+    "longDescription": "Installable SHD MCP workflows for projects, ProjectBase, AirBase, Knowledge, tasks, documents, finance, CRM, inventory, analytics, service operations, Grafana, Zulip and linked Gitea; PDF Scheme Editor plan geometry with focused room and wall/window/door tracing.",
     "developerName": "SHD",
     "category": "Productivity",
     "capabilities": [

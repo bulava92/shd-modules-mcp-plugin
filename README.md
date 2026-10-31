@@ -15,7 +15,8 @@ The package contains:
   project editing, repository inspection, Zulip, Grafana, admin, finance, CRM,
   analytics, estimates, scheduling, entity resolution, Wiki, discussions,
   documents, organizations/ACL, notifications, inventory, agents, status-page,
-  realtime/activity, Terms/contracts and Gitea workflows;
+  realtime/activity, Terms/contracts, Gitea workflows and dedicated PDF room
+  and wall/opening tracing;
 - `assets/` — plugin branding;
 - `widgets/` — versioned MCP Apps resources with manifest, checksum and
   provenance metadata;
