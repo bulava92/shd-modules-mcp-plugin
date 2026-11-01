@@ -25,7 +25,11 @@ Create wall and opening polygons that match the source drawing and fit the exist
 - Walls may meet room boundaries, but must not overlap room interiors. Keep actual wall thickness outside rooms. Where the source shows adjoining wall and room edges, align them to touch and avoid coordinate gaps.
 - Call `shd_preview_pdf_scheme_editor_wall_opening_candidates` before saving. It shows near-parallel wall-edge snaps within its calibrated tolerance, permits shared boundary contact, and reports positive-area overlap with rooms, openings that overlap wall interiors, or openings that fail to share a non-zero boundary segment with a wall. Snapping is only a small alignment correction: it does not fill missing wall sections and never moves openings.
 - Correct or discard every candidate marked `saveable=false`. Do not change a candidate just to make the checker pass if the source drawing does not support that geometry. If the boundary remains ambiguous, leave it unresolved and report where.
-- Do not use Build Walls as PDF recognition. It fills a geometric complement around room polygons and can miss real wall faces, columns, short pieces, and openings.
+- Wall recognition from the PDF vectors uses the local recognizer `tools/pdf-scheme-tracing/recognize.py` in the admin repository, not Build Walls. Build Walls fills a geometric complement around room polygons and must not be used for recognition.
+  - Run it in dry-run first, then with `--write`. Always pass `--url` (or `MCP_URL`), `--project`, `--document` and `--config`; nothing is defaulted.
+  - Per-document zones (legend and detail areas that are not walls) and hand-read walls live in `tools/pdf-scheme-tracing/zones/<document>.json`, passed with `--config`. Do not put document-specific coordinates into `materials.json`.
+  - Wall types and fill colours are set in `materials.json` (`wall_fills`). Each wall keeps its type: partitions, monolith, soundproofing layer, hatched monolith and hand-read walls are not merged into one polygon.
+  - Check the dry-run result before writing: piece count, the added and removed area against the document, and no invalid polygons. Verify the result visually in the editor; the recognizer does not confirm alignment with the PDF.
 
 ## Model windows and doors
 
