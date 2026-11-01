@@ -1,46 +1,30 @@
 ---
 name: shd-pdf-wall-openings
-description: Trace and review wall regions and window or door openings from architectural PDFs in SHD PDF Scheme Editor. Use for recognizing, adding, or correcting walls, columns that form wall regions, windows, hinged doors, and sliding doors; use shd-pdf-room-tracing for room polygons.
+description: Trace and review wall regions and window or door openings from architectural PDFs in SHD PDF Scheme Editor.
 metadata: modules=pdf-scheme-editor
 ---
 
 # Trace walls and openings from architectural PDFs
 
-Create wall and opening polygons that match the source drawing and fit the existing room geometry. The tools provide vector candidates and geometric checks; they do not semantically recognize every wall, window, or door without visual review.
+The PDF and its rendered page provide the geometry evidence. Vector tools extract candidate contours and check geometry; they do not semantically classify arbitrary lines, fills, windows, or doors.
 
-## Read and classify the source
+## Trace wall regions
 
-- Resolve the exact project and document with `shd_list_pdf_scheme_editor_documents`, then call `shd_get_pdf_scheme_editor_document` with `include_state=true`. Keep its current `base_revision` and each target annotation's `objectRevision`. Read `shd://pdf-scheme-editor/geometry-contract` when field shapes or validation rules are unclear.
-- Use the PDF source as geometry evidence, and inspect the full page before zooming into junctions, columns, window bays, door jambs, and wall returns.
-- For vector PDFs, call `shd_analyze_pdf_scheme_editor_vectors` to inspect fills, strokes, paths, and text anchors. Preview likely fill styles with `shd_preview_pdf_scheme_editor_vector_style`. A style is only a clue: confirm its hatching, paired faces, geometry, and continuity on the rendered PDF.
-- When a fill style is visually confirmed as a wall material, call `shd_trace_pdf_scheme_editor_wall_candidates` with only those style IDs. It can join subpaths that share complete vector edges, including concave contours. It does not decide which fills are walls; ambiguous or partial paths remain unmerged. Review every returned candidate against the PDF.
-- For raster PDFs or missing vector paths, trace polygons from high-resolution source crops. Do not invent geometry from a gap, dimension, label, door arc, furniture, radiator, or overlay.
-- Treat a `wall` as the filled wall-area polygon following its actual faces and thickness, not a centerline. Trace short wall pieces, returns, jambs, columns, and stepped or angled sections when they are visibly part of the wall construction. For a shaft or boxed feature, trace only its drawn solid wall bands; do not fill a visible hollow interior as wall.
-- Treat a window or door as an `opening` polygon in the actual wall gap. Identify it from its frame, leaf, track, swing, or other source symbol. Do not bridge an opening with wall geometry, and do not create an opening from an unexplained gap alone.
+- Resolve the exact document and read its current state and calibration. Inspect the full page before zooming into wall junctions, columns, window bays, jambs, and returns.
+- For vector PDFs, call `shd_analyze_pdf_scheme_editor_vectors`, then preview likely fill styles with `shd_preview_pdf_scheme_editor_vector_style`. A style is a clue only. Confirm its contours and continuity against the rendered source.
+- Call `shd_trace_pdf_scheme_editor_wall_candidates` only with fill styles visually confirmed as wall areas. It extracts and joins vector contours; it does not decide whether a style is a wall. Review every returned polygon against the PDF before saving.
+- For raster PDFs or missing vector paths, trace the actual wall faces manually from the source page. Keep wall thickness and returns in the polygon; do not infer walls from room complements.
+- A `wall` is a filled wall-area polygon, not a centerline. Trace only solid wall bands around shafts and boxes; leave visible hollow areas empty.
 
-## Keep geometry aligned
+## Trace windows and doors
 
-- Use page-local coordinates from the editor preview. Preserve each change in direction; do not simplify a niche, angled return, narrow pier, or irregular outline into a rectangle.
-- Set calibration only from a known printed dimension or other explicit measured length.
-- Walls may meet room boundaries, but must not overlap room interiors. Keep actual wall thickness outside rooms. Where the source shows adjoining wall and room edges, align them to touch and avoid coordinate gaps.
-- Call `shd_preview_pdf_scheme_editor_wall_opening_candidates` before saving. It shows near-parallel wall-edge snaps within its calibrated tolerance, permits shared boundary contact, and reports positive-area overlap with rooms, openings that overlap wall interiors, or openings that fail to share a non-zero boundary segment with a wall. Snapping is only a small alignment correction: it does not fill missing wall sections and never moves openings.
-- Correct or discard every candidate marked `saveable=false`. Do not change a candidate just to make the checker pass if the source drawing does not support that geometry. If the boundary remains ambiguous, leave it unresolved and report where.
-- Wall recognition from the PDF vectors uses the local recognizer `tools/pdf-scheme-tracing/recognize.py` in the admin repository, not Build Walls. Build Walls fills a geometric complement around room polygons and must not be used for recognition.
-  - Run it in dry-run first, then with `--write`. Always pass `--url` (or `MCP_URL`), `--project`, `--document` and `--config`; nothing is defaulted.
-  - Per-document zones (legend and detail areas that are not walls) and hand-read walls live in `tools/pdf-scheme-tracing/zones/<document>.json`, passed with `--config`. Do not put document-specific coordinates into `materials.json`.
-  - Wall types and fill colours are set in `materials.json` (`wall_fills`). Each wall keeps its type: partitions, monolith, soundproofing layer, hatched monolith and hand-read walls are not merged into one polygon.
-  - Check the dry-run result before writing: piece count, the added and removed area against the document, and no invalid polygons. Verify the result visually in the editor; the recognizer does not confirm alignment with the PDF.
+- Prepare each window or door as an `opening` polygon that matches the actual frame, threshold, track, or leaf shown on the PDF. Do not classify unexplained gaps as openings.
+- Save windows with `openingKind=window`, doors with `openingKind=door`. Use `doorType=sliding` only when the drawing shows a sliding system; omit `doorOrientation` unless the hinge and swing side are clear.
+- The opening candidate preview validates geometry against existing walls, rooms, and openings. It does not recognize or generate openings. Inspect proposals against the source before writing.
 
-## Model windows and doors
+## Align and save
 
-- Save both windows and doors as `type=opening`, with `openingKind=window` or `openingKind=door`.
-- For a hinged door, use `doorType=swing` or omit it for the default. If the PDF clearly shows the swing and hinge side, set `doorOrientation` to the matching supported value 0–3; otherwise omit it when adding, or set it to `null` when updating so the editor can choose the adjacent-room side. Never derive the opening direction from the door arc's position alone if the hinge is unclear.
-- For a sliding door, set `doorType=sliding` in the opening write and `door_type=sliding` in the candidate preview. Sliding doors use the track and slide arrows, with no swing arc; omit `doorOrientation`.
-- Trace the opening's actual extent from the frame/threshold or track shown in the PDF. Keep its polygon out of wall interiors while ensuring it meets the wall boundary as required by the preview. Inspect the rendered symbol and orientation after saving.
-
-## Save and verify
-
-- Read current document and annotation revisions before a write. Use the typed `shd_add_pdf_scheme_editor_wall` / `shd_add_pdf_scheme_editor_opening` and matching update tools. Keep page, IDs, `base_revision`, `base_object_revision` for updates, and a unique `idempotency_key` current.
-- Preview proposed wall and opening polygons before writing. A successful preview is not a save and is not proof that the geometry matches the PDF.
-- After writing, read the document again and verify revision, polygons, opening kind/type, orientation, and alignment against the source. Check close-ups and the whole page, including wall segments between windows and around room corners.
-- Do not delete unrelated annotations. Report any unrecognized or ambiguous wall/opening regions instead of silently guessing.
+- Use page-local PDF Scheme Editor coordinates and explicit calibration from a printed dimension or another measured length.
+- Keep wall polygons outside room interiors; shared boundary contact is allowed. Preview wall/opening candidates with `shd_preview_pdf_scheme_editor_wall_opening_candidates` and correct or discard each candidate marked `saveable=false`.
+- Do not use the editor's **Build Walls** complement operation as PDF recognition. Manual wall and opening drawing tools remain available for source-traced geometry.
+- Read current `base_revision` and target `objectRevision` before writes. Use typed add/update tools or one revisioned operations batch with a unique `idempotency_key`. Re-read state after writing, verify geometry against the PDF, and report ambiguous areas rather than guessing.
