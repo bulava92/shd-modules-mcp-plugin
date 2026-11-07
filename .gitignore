@@ -10,3 +10,4 @@ __pycache__/
 
 # MCP widget runtime artifacts are generated from the sources before serving.
 /plugins/shd-mcp-plugin/widgets/*/v1/
+AGENTS.md
